@@ -6,22 +6,12 @@ import { join } from 'path'
 import { shell } from '../shell'
 import { Recipe } from '../types/recipe'
 
-export const svelte: Recipe = {
+export const sveltekit: Recipe = {
   shortName: 'svelte',
   descriptiveName: {
-    name: 'Svelte (https://github.com/sveltejs/template)',
-    value: 'svelte'
+    name: 'SvelteKit (https://kit.svelte.dev/)',
+    value: 'sveltekit'
   },
-  extraQuestions: ({ ci }) => [
-    {
-      type: 'confirm',
-      name: 'typescript',
-      message: 'Enable Typescript?',
-      default: true,
-      loop: false,
-      when: !ci
-    }
-  ],
   configUpdate: ({ cfg, packageManager }) => ({
     ...cfg,
     distDir: `../public`,
@@ -33,20 +23,8 @@ export const svelte: Recipe = {
       packageManager.name === 'npm' ? 'npm run' : packageManager.name
     } build`
   }),
-  preInit: async ({ cwd, cfg, answers, ci }) => {
-    await shell(
-      'npx',
-      [ci ? '--yes' : '', 'degit', 'sveltejs/template', cfg.appName],
-      {
-        cwd
-      }
-    )
-
-    if (answers?.typescript) {
-      await shell('node', ['scripts/setupTypeScript.js'], {
-        cwd: join(cwd, cfg.appName)
-      })
-    }
+  preInit: async ({ cwd, cfg, packageManager, ci }) => {
+    await packageManager.create('svelte', [cfg.appName], { cwd })
   },
   postInit: async ({ cfg, packageManager }) => {
     console.log(`
