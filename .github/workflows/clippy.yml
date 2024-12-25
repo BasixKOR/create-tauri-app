@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Tauri Programme within The Commons Conservancy
+# Copyright 2019-2022 Tauri Programme within The Commons Conservancy
 # SPDX-License-Identifier: Apache-2.0
 # SPDX-License-Identifier: MIT
 
@@ -10,13 +10,13 @@ on:
       - dev
     paths:
       - '.github/workflows/clippy.yml'
-      - 'packages/cli/**'
+      - 'src/**'
       - 'Cargo.lock'
       - 'Cargo.toml'
   pull_request:
     paths:
       - .github/workflows/clippy.yml
-      - packages/cli/**
+      - src/**
       - Cargo.lock
       - Cargo.toml
 
@@ -29,16 +29,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: install stable
-        uses: actions-rs/toolchain@v1
+      - uses: dtolnay/rust-toolchain@stable
         with:
-          profile: minimal
-          toolchain: stable
-          override: true
           components: clippy
 
-      - name: clippy
-        uses: actions-rs/clippy-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          args: --all-targets --all-features -- -D warnings
+      - run: cargo clippy --all-targets --all-features -- -D warnings

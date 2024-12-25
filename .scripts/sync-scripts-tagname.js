@@ -16,34 +16,19 @@ const bump = process.argv[2];
 
 const inc = (content) => {
   const re = new RegExp(
-    /(.*__TAG_NAME__\s*=\s*("|')create-tauri-app-v)([0-9])+\.([0-9])+\.([0-9])+(-([a-zA-z]+\.([0-9]+)))?(("|').*)/,
-    "s"
+    /(.*__TAG_NAME__\s*=\s*("|')create-tauri-app-v)([0-9]+)\.([0-9]+)\.([0-9]+)(-([a-zA-z]+\.([0-9]+)))?(("|').*)/,
+    "s",
   );
   const [, before, , major, minor, patch, preStr, , pre, after] =
     re.exec(content);
 
   let ret;
   switch (bump) {
-    case "prepatch":
-    case "preminor":
-    case "premajor":
-    case "prerelease":
-      const preJSON = JSON.parse(
-        readFileSync(join(__dirname, "../.changes/pre.json")).toString()
-      );
-      ret = `${before}${
-        preStr && (preStr.includes("alpha") || preStr.includes("beta"))
-          ? major
-          : Number(major) + 1
-      }.0.0-${preJSON.tag}.${
-        pre && preStr.includes(preJSON.tag) ? Number(pre) + 1 : 0
-      }${after}`;
-      break;
     case "major":
       ret = `${before}${Number(major) + 1}.0.0${after}`;
       break;
     case "minor":
-      ret = `${before}${major}.${Number(minor) + 1}.${patch}${after}`;
+      ret = `${before}${major}.${Number(minor) + 1}.0${after}`;
       break;
     case "patch":
       ret = `${before}${major}.${minor}.${Number(patch) + 1}${after}`;

@@ -1,10 +1,18 @@
 {
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:base", ":disableDependencyDashboard"],
   "packageRules": [
     {
-      "matchPaths": ["packages/cli/fragments/**"],
-      "rangeStrategy": "replace",
-      "extends": ["schedule:monthly"]
+      "groupName": "templates dependencies",
+      "matchFileNames": [
+        "templates/**/*package.json",
+        "templates/**/*Cargo.toml"
+      ],
+      "schedule": ["after 3am on Wednesday"]
+    },
+    {
+      "groupName": "napi-rs dependencies",
+      "matchPackagePrefixes": ["napi"]
     }
   ]
 }
